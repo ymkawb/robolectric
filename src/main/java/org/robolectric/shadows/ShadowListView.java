@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings({"UnusedDeclaration"})
-@Implements(value = ListView.class, inheritImplementationMethods = true)
+@Implements(ListView.class)
 public class ShadowListView extends ShadowAbsListView {
     @RealObject private ListView realListView;
 
@@ -20,9 +20,9 @@ public class ShadowListView extends ShadowAbsListView {
     private List<View> footerViews = new ArrayList<View>();
 
     @Implementation
-    @Override
+//    @Override
     public View findViewById(int id) {
-        View child = super.findViewById(id);
+        View child = realListView.findViewById(id);
         if (child == null) {
             child = findView(headerViews, id);
 
@@ -118,13 +118,13 @@ public class ShadowListView extends ShadowAbsListView {
     @Override
     protected void addViews() {
         for (View headerView : headerViews) {
-            addView(headerView);
+            realListView.addView(headerView);
         }
 
         super.addViews();
 
         for (View footerView : footerViews) {
-            addView(footerView);
+            realListView.addView(footerView);
         }
     }
 }

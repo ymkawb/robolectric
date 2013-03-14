@@ -59,8 +59,8 @@ public class ShadowAdapterView extends ShadowViewGroup {
             view = (View) view.getParent();
         }
 
-        for (int i = 0; i < getChildCount(); i++) {
-            if (view == getChildAt(i)) {
+        for (int i = 0; i < realAdapterView.getChildCount(); i++) {
+            if (view == realAdapterView.getChildAt(i)) {
                 return i;
             }
         }
@@ -233,7 +233,7 @@ public class ShadowAdapterView extends ShadowViewGroup {
                 @Override
                 public void run() {
                     if (hasOnItemSelectedListener()) {
-                        onItemSelectedListener.onItemSelected(realAdapterView, getChildAt(position), position, getAdapter().getItemId(position));
+                        onItemSelectedListener.onItemSelected(realAdapterView, realAdapterView.getChildAt(position), position, getAdapter().getItemId(position));
                     }
                 }
             });
@@ -299,7 +299,7 @@ public class ShadowAdapterView extends ShadowViewGroup {
             return;
         }
 
-        super.removeAllViews();
+        realAdapterView.removeAllViews();
         addViews();
     }
 
@@ -345,7 +345,7 @@ public class ShadowAdapterView extends ShadowViewGroup {
                 View view = adapter.getView(i, null, realAdapterView);
                 // don't add null views
                 if (view != null) {
-                    addView(view);
+                    realAdapterView.addView(view);
                 }
                 newItems.add(adapter.getItem(i));
             }
