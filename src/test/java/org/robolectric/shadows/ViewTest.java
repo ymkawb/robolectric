@@ -292,43 +292,43 @@ public class ViewTest {
 
     @Test
     public void shouldAddOnClickListenerFromAttribute() throws Exception {
-      RoboAttributeSet attrs = new RoboAttributeSet(new ArrayList<Attribute>(), new EmptyResourceLoader(), null);
-      attrs.put("android:attr/onClick", "clickMe", R.class.getPackage().getName());
+        RoboAttributeSet attrs = new RoboAttributeSet(new ArrayList<Attribute>(), new EmptyResourceLoader(), null);
+        attrs.put("android:attr/onClick", "clickMe", R.class.getPackage().getName());
 
-      view = new View(Robolectric.application, attrs);
-      assertNotNull(shadowOf(view).getOnClickListener());
+        view = new View(Robolectric.application, attrs);
+        assertNotNull(shadowOf(view).getOnClickListener());
     }
 
     @Test
     public void shouldCallOnClickWithAttribute() throws Exception {
-      final AtomicBoolean called = new AtomicBoolean(false);
-      Activity context = new Activity() {
-        @SuppressWarnings("UnusedDeclaration")
-        public void clickMe(View view) {
-          called.set(true);
-        }
-      };
-      RoboAttributeSet attrs = new RoboAttributeSet(new ArrayList<Attribute>(), new EmptyResourceLoader(), null);
-      attrs.put("android:attr/onClick", "clickMe", R.class.getPackage().getName());
+        final AtomicBoolean called = new AtomicBoolean(false);
+        Activity context = new Activity() {
+            @SuppressWarnings("UnusedDeclaration")
+            public void clickMe(View view) {
+                called.set(true);
+            }
+        };
+        RoboAttributeSet attrs = new RoboAttributeSet(new ArrayList<Attribute>(), new EmptyResourceLoader(), null);
+        attrs.put("android:attr/onClick", "clickMe", R.class.getPackage().getName());
 
-      view = new View(context, attrs);
-      view.performClick();
-      assertTrue("Should have been called", called.get());
+        view = new View(context, attrs);
+        view.performClick();
+        assertTrue("Should have been called", called.get());
     }
 
     @Test(expected = RuntimeException.class)
     public void shouldThrowExceptionWithBadMethodName() throws Exception {
-      final AtomicBoolean called = new AtomicBoolean(false);
-      Activity context = new Activity() {
-        public void clickMe(View view) {
-          called.set(true);
-        }
-      };
-      RoboAttributeSet attrs = new RoboAttributeSet(new ArrayList<Attribute>(), null, null);
-      attrs.put("android:onClick", "clickYou", R.class.getPackage().getName());
+        final AtomicBoolean called = new AtomicBoolean(false);
+        Activity context = new Activity() {
+            public void clickMe(View view) {
+                called.set(true);
+            }
+        };
+        RoboAttributeSet attrs = new RoboAttributeSet(new ArrayList<Attribute>(), null, null);
+        attrs.put("android:onClick", "clickYou", R.class.getPackage().getName());
 
-      view = new View(context, attrs);
-      view.performClick();
+        view = new View(context, attrs);
+        view.performClick();
     }
 
     @Test
@@ -675,7 +675,7 @@ public class ViewTest {
             super.onMeasure(800, 400);
         }
     }
-    
+
     @Test public void shouldCallOnAttachedToAndDetachedFromWindow() throws Exception {
         MyView parent = new MyView("parent");
         parent.addView(new MyView("child"));
