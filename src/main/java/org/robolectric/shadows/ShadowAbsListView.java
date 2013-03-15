@@ -6,9 +6,11 @@ import android.widget.AbsListView;
 import android.widget.ListView;
 import org.robolectric.internal.Implementation;
 import org.robolectric.internal.Implements;
+import org.robolectric.internal.RealObject;
 
-@Implements(value = AbsListView.class, inheritImplementationMethods = true)
+@Implements(AbsListView.class)
 public class ShadowAbsListView extends ShadowAdapterView {
+    @RealObject private AbsListView realAbsListView;
     private AbsListView.OnScrollListener onScrollListener;
     private int smoothScrolledPosition;
     private int lastSmoothScrollByDistance;
@@ -33,7 +35,6 @@ public class ShadowAbsListView extends ShadowAdapterView {
     }
 
     @Implementation
-    @Override
     public boolean performItemClick(View view, int position, long id) {
         boolean handled = false;
         if (choiceMode != ListView.CHOICE_MODE_NONE) {
@@ -51,7 +52,7 @@ public class ShadowAbsListView extends ShadowAdapterView {
             }
         }
 
-        handled |= super.performItemClick(view, position, id);
+        handled |= realAbsListView.performItemClick(view, position, id);
         return handled;
     }
 

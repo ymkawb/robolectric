@@ -1,6 +1,5 @@
 package org.robolectric.shadows;
 
-import android.content.Context;
 import android.graphics.Point;
 import android.view.MotionEvent;
 import android.widget.ZoomButtonsController;
@@ -46,10 +45,6 @@ public class ShadowMapView extends ShadowViewGroup {
     public ShadowMapView(MapView mapView) {
         realMapView = mapView;
         zoomButtonsController = new ZoomButtonsController(mapView);
-    }
-
-    public void __constructor__(Context context, String title) {
-        super.__constructor__(context);
     }
 
     public static int toE6(double d) {

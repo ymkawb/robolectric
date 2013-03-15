@@ -11,7 +11,7 @@ import org.robolectric.internal.Implements;
  * Shadow for {@link FrameLayout} that simulates its implementation.
  */
 @SuppressWarnings("UnusedDeclaration")
-@Implements(value = FrameLayout.class, inheritImplementationMethods = true)
+@Implements(FrameLayout.class)
 public class ShadowFrameLayout extends ShadowViewGroup {
     private FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(0, 0);
 

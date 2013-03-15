@@ -235,6 +235,15 @@ public class RoboAttributeSetTest {
         assertThat(roboAttributeSet.getAttributeValue("org.robolectric.lib2", "offsetX")).isEqualTo("1");
     }
 
+    @Test public void getAttributeNameResource() throws Exception {
+        createTestAttributeSet(
+                new Attribute("org.robolectric.lib1:attr/message", "1", TEST_PACKAGE),
+                new Attribute("org.robolectric.lib1:attr/keycode", "1", TEST_PACKAGE)
+                );
+        assertThat(roboAttributeSet.getAttributeNameResource(0)).isEqualTo(0); // no id for attr.message for some reason...
+        assertThat(roboAttributeSet.getAttributeNameResource(1)).isEqualTo(R.attr.keycode);
+    }
+
     private void createTestAttributeSet(Attribute... attributes) {
         roboAttributeSet = new RoboAttributeSet(asList(attributes), resourceLoader, null);
     }

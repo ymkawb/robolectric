@@ -25,7 +25,7 @@ public class ShadowViewGroup extends ShadowView {
     private LayoutAnimationController layoutAnim;
     private boolean disallowInterceptTouchEvent = false;
     private MotionEvent interceptedTouchEvent;
-    private ViewGroup.OnHierarchyChangeListener onHierarchyChangeListener;
+//    private ViewGroup.OnHierarchyChangeListener onHierarchyChangeListener;
 
 //    @Implementation
 //    @Override
@@ -198,10 +198,10 @@ public class ShadowViewGroup extends ShadowView {
         }
     }
 
-    @Implementation
-    public void setOnHierarchyChangeListener(ViewGroup.OnHierarchyChangeListener onHierarchyChangeListener) {
-        this.onHierarchyChangeListener = onHierarchyChangeListener;
-    }
+//    @Implementation
+//    public void setOnHierarchyChangeListener(ViewGroup.OnHierarchyChangeListener onHierarchyChangeListener) {
+//        this.onHierarchyChangeListener = onHierarchyChangeListener;
+//    }
 
     /**
      * Returns a string representation of this {@code ViewGroup} by concatenating all of the strings contained in all
