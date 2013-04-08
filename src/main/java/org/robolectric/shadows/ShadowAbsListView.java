@@ -8,6 +8,8 @@ import org.robolectric.internal.Implementation;
 import org.robolectric.internal.Implements;
 import org.robolectric.internal.RealObject;
 
+import static org.robolectric.Robolectric.directlyOn;
+
 @Implements(AbsListView.class)
 public class ShadowAbsListView extends ShadowAdapterView {
     @RealObject private AbsListView realAbsListView;
@@ -52,7 +54,9 @@ public class ShadowAbsListView extends ShadowAdapterView {
             }
         }
 
-        handled |= realAbsListView.performItemClick(view, position, id);
+        handled |= ((Boolean)
+                directlyOn(realAbsListView, AbsListView.class, "performItemClick", View.class, int.class, long.class)
+                        .invoke(view, position, id));
         return handled;
     }
 

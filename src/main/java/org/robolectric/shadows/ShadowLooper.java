@@ -81,9 +81,18 @@ public class ShadowLooper {
 
     @Implementation
     public Thread getThread() {
-    	return myThread;
+        return myThread;
     }
-    
+
+    @Implementation
+    public int postSyncBarrier() {
+        return 1;
+    }
+
+    @Implementation
+    public void removeSyncBarrier(int token) {
+    }
+
     public boolean hasQuit() {
         synchronized (realObject) {
             return quit;

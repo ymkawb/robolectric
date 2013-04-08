@@ -13,24 +13,27 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
+import static org.fest.reflect.core.Reflection.*;
 import static org.robolectric.Robolectric.shadowOf;
 
-public class TestWindow extends Window {
+public class RoboWindow extends Window {
     public int requestedFeatureId;
     public int featureDrawableResourceFeatureId;
     public int featureDrawableResourceResId;
     public int softInputMode;
-    private TestWindowManager windowManager;
+    private RoboWindowManager windowManager;
     private View contentView;
     private FrameLayout decorView;
+    private ViewParent viewRootImpl;
 
-    public TestWindow(Context context) {
+    public RoboWindow(Context context) {
         super(context);
-        windowManager = new TestWindowManager();
+        windowManager = new RoboWindowManager();
     }
 
     @Override
@@ -201,12 +204,29 @@ public class TestWindow extends Window {
 
     @Override public ViewGroup getDecorView() {
         if (decorView == null) {
-            decorView = new FrameLayout(getContext());
+            decorView = new FrameLayout(getContext()) {
+                @Override public void requestLayout() {
+                    System.out.println("request window layout!");
+                    super.requestLayout();
+                }
+            };
             // On a typical Android device you can call:
             //   myWindow.getDecorView().findViewById(android.R.content)
             decorView.setId(R.id.content);
+
+            viewRootImpl = createViewRootImpl(getContext());
+            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+            field("inputFeatures").ofType(int.class).in(layoutParams)
+                    .set(field("INPUT_FEATURE_NO_INPUT_CHANNEL").ofType(int.class).in(WindowManager.LayoutParams.class).get());
+            method("setView").withParameterTypes(View.class, WindowManager.LayoutParams.class, View.class)
+                    .in(viewRootImpl).invoke(decorView, layoutParams, null);
         }
         return decorView;
+    }
+
+    private ViewParent createViewRootImpl(Context context) {
+        Class<? extends ViewParent> viewRootImplClass = type("android.view.ViewRootImpl").withClassLoader(View.class.getClassLoader()).loadAs(ViewParent.class);
+        return constructor().withParameterTypes(Context.class).in(viewRootImplClass).newInstance(context);
     }
 
     @Override

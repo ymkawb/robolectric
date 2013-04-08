@@ -66,7 +66,7 @@ public class ShadowViewStub extends ShadowView {
                 parent.removeViewAt(index);
 //        parent.removeViewInLayout(viewStub);
 
-                ViewGroup.LayoutParams layoutParams = getLayoutParams();
+                ViewGroup.LayoutParams layoutParams = realView.getLayoutParams();
                 if (layoutParams != null) {
                     parent.addView(view, index, layoutParams);
                 } else {

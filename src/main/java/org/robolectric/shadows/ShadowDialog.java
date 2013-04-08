@@ -14,7 +14,7 @@ import org.robolectric.internal.HiddenApi;
 import org.robolectric.internal.Implementation;
 import org.robolectric.internal.Implements;
 import org.robolectric.internal.RealObject;
-import org.robolectric.tester.android.view.TestWindow;
+import org.robolectric.tester.android.view.RoboWindow;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -206,7 +206,7 @@ public class ShadowDialog {
     @Implementation
     public Window getWindow() {
         if (window == null) {
-            window = new TestWindow(realDialog.getContext());
+            window = new RoboWindow(realDialog.getContext());
         }
         return window;
     }

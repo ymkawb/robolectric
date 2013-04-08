@@ -25,7 +25,7 @@ import org.robolectric.Robolectric;
 import org.robolectric.TestRunners;
 import org.robolectric.res.Attribute;
 import org.robolectric.res.EmptyResourceLoader;
-import org.robolectric.tester.android.view.TestWindow;
+import org.robolectric.tester.android.view.RoboWindow;
 import org.robolectric.util.TestAnimationListener;
 import org.robolectric.util.TestOnClickListener;
 import org.robolectric.util.TestOnLongClickListener;
@@ -681,7 +681,7 @@ public class ViewTest {
         parent.addView(new MyView("child"));
         transcript.assertNoEventsSoFar();
 
-        TestWindow window = new TestWindow(application);
+        RoboWindow window = new RoboWindow(application);
         window.setContentView(parent);
         transcript.assertEventsSoFar("parent attached", "child attached");
 
@@ -705,7 +705,7 @@ public class ViewTest {
         MyView parent = new MyView("parent");
         parent.addView(new MyView("child"));
         parent.addView(new MyView("another child"));
-        new TestWindow(application).setContentView(parent);
+        new RoboWindow(application).setContentView(parent);
         transcript.clear();
         parent.removeAllViews();
         transcript.assertEventsSoFar("child detached", "another child detached");

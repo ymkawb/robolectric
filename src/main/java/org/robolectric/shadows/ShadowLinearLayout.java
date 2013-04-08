@@ -1,7 +1,6 @@
 package org.robolectric.shadows;
 
 import android.view.Gravity;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import org.robolectric.internal.Implementation;
 import org.robolectric.internal.Implements;
@@ -10,16 +9,6 @@ import org.robolectric.internal.Implements;
 public class ShadowLinearLayout extends ShadowViewGroup {
     private int orientation;
     private int gravity = Gravity.TOP | Gravity.START;
-
-    public ShadowLinearLayout() {
-        setLayoutParams(new LinearLayout.LayoutParams(0, 0));
-    }
-
-//    @Override
-    @Implementation
-    public ViewGroup.LayoutParams generateDefaultLayoutParams() {
-        return new LinearLayout.LayoutParams(0, 0);
-    }
 
     @Implementation
     public int getOrientation() {

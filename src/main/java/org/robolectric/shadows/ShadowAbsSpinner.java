@@ -15,7 +15,8 @@ public class ShadowAbsSpinner extends ShadowAdapterView {
 
     @Implementation
     public void setSelection(int position, boolean animate) {
-        directlyOn(realAbsSpinner, AbsSpinner.class).setSelection(position);
+        directlyOn(realAbsSpinner, AbsSpinner.class, "setSelection", int.class, boolean.class)
+                .invoke(position, animate);
         animatedTransition = animate;
     }
 

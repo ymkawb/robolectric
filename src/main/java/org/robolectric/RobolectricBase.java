@@ -78,7 +78,6 @@ import org.robolectric.shadows.ShadowCursorAdapter;
 import org.robolectric.shadows.ShadowCursorLoader;
 import org.robolectric.shadows.ShadowCursorWrapper;
 import org.robolectric.shadows.ShadowDashPathEffect;
-import org.robolectric.shadows.ShadowDataSetObservable;
 import org.robolectric.shadows.ShadowDatabaseUtils;
 import org.robolectric.shadows.ShadowDateFormat;
 import org.robolectric.shadows.ShadowDatePickerDialog;
@@ -343,7 +342,6 @@ public class RobolectricBase {
             ShadowCursorWrapper.class,
             ShadowDashPathEffect.class,
             ShadowDatabaseUtils.class,
-            ShadowDataSetObservable.class,
             ShadowDateFormat.class,
             ShadowDatePickerDialog.class,
             ShadowDebug.class,

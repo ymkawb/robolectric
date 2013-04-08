@@ -103,14 +103,14 @@ public class ShadowMapView extends ShadowViewGroup {
                         point = new Point();
                     }
 
-                    point.y = scaleDegree(geoPoint.getLatitudeE6(), bottom, top, mapCenter.getLatitudeE6(), latitudeSpan);
-                    point.x = scaleDegree(geoPoint.getLongitudeE6(), left, right, mapCenter.getLongitudeE6(), longitudeSpan);
+                    point.y = scaleDegree(geoPoint.getLatitudeE6(), realView.getBottom(), realView.getTop(), mapCenter.getLatitudeE6(), latitudeSpan);
+                    point.x = scaleDegree(geoPoint.getLongitudeE6(), realView.getLeft(), realView.getRight(), mapCenter.getLongitudeE6(), longitudeSpan);
                     return point;
                 }
 
                 @Override public GeoPoint fromPixels(int x, int y) {
-                    int lat = scalePixel(y, bottom, -realMapView.getHeight(), mapCenter.getLatitudeE6(), latitudeSpan);
-                    int lng = scalePixel(x, left, realMapView.getWidth(), mapCenter.getLongitudeE6(), longitudeSpan);
+                    int lat = scalePixel(y, realView.getBottom(), -realMapView.getHeight(), mapCenter.getLatitudeE6(), latitudeSpan);
+                    int lng = scalePixel(x, realView.getLeft(), realMapView.getWidth(), mapCenter.getLongitudeE6(), longitudeSpan);
                     return new GeoPoint(lat, lng);
                 }
 

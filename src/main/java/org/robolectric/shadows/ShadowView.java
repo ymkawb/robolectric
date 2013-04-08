@@ -1,7 +1,6 @@
 package org.robolectric.shadows;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
@@ -14,9 +13,9 @@ import android.view.TouchDelegate;
 import android.view.View;
 import android.view.View.MeasureSpec;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
-import org.fest.reflect.core.Reflection;
 import org.robolectric.Robolectric;
 import org.robolectric.internal.Implementation;
 import org.robolectric.internal.Implements;
@@ -50,7 +49,6 @@ public class ShadowView {
     protected View realView;
 
     ShadowView parent;
-    protected Context context;
     private boolean selected;
     private boolean pressed;
     private View.OnClickListener onClickListener;
@@ -58,17 +56,12 @@ public class ShadowView {
     private Object tag;
     private boolean enabled = true;
     private int visibility = View.VISIBLE;
-    int left;
-    int top;
-    int right;
-    int bottom;
     float x;
     float y;
     private int paddingLeft;
     private int paddingTop;
     private int paddingRight;
     private int paddingBottom;
-    private ViewGroup.LayoutParams layoutParams;
     private Map<Integer, Object> tags = new HashMap<Integer, Object>();
     private boolean clickable;
     private boolean longClickable;
@@ -91,8 +84,6 @@ public class ShadowView {
     private MotionEvent lastTouchEvent;
     private int nextFocusDownId = View.NO_ID;
     private CharSequence contentDescription = null;
-    private int measuredWidth = 0;
-    private int measuredHeight = 0;
     private TouchDelegate touchDelegate;
     private float translationX = 0.0f;
     private float translationY = 0.0f;
@@ -106,7 +97,6 @@ public class ShadowView {
     public void __constructor__(Context context, AttributeSet attributeSet, int defStyle) {
         if (context == null) throw new NullPointerException("no context");
 
-        this.context = context;
         this.attributeSet = attributeSet;
 
         getConstructor(View.class, realView, Context.class, AttributeSet.class, int.class)
@@ -232,30 +222,10 @@ public class ShadowView {
         return root.realView;
     }
 
-    @Implementation
-    public ViewGroup.LayoutParams getLayoutParams() {
-        return layoutParams;
-    }
-
-    @Implementation
-    public void setLayoutParams(ViewGroup.LayoutParams params) {
-        layoutParams = params;
-    }
-
 //    @Implementation
 //    public final ViewParent getParent() {
 //        return parent == null ? null : (ViewParent) parent.realView;
 //    }
-
-    @Implementation
-    public final Context getContext() {
-        return context;
-    }
-
-    @Implementation
-    public Resources getResources() {
-        return context.getResources();
-    }
 
     /**
      * Build drawable, either LayerDrawable or BitmapDrawable.
@@ -264,17 +234,17 @@ public class ShadowView {
      * @return Drawable
      */
     protected Drawable buildDrawable(int resourceId) {
-        return getResources().getDrawable(resourceId);
+        return realView.getResources().getDrawable(resourceId);
     }
 
     protected String getQualifiers() {
-        return shadowOf(context.getResources().getConfiguration()).getQualifiers();
+        return shadowOf(realView.getResources().getConfiguration()).getQualifiers();
     }
 
     @Implementation
     public void setBackgroundResource(int backgroundResourceId) {
         this.backgroundResourceId = backgroundResourceId;
-        setBackgroundDrawable(backgroundResourceId == 0 ? null : getResources().getDrawable(backgroundResourceId));
+        setBackgroundDrawable(backgroundResourceId == 0 ? null : realView.getResources().getDrawable(backgroundResourceId));
     }
 
     /**
@@ -408,76 +378,10 @@ public class ShadowView {
     }
 
     @Implementation
-    public final int getHeight() {
-        return bottom - top;
-    }
-
-    @Implementation
-    public final int getWidth() {
-        return right - left;
-    }
-
-    @Implementation
-    public final int getMeasuredWidth() {
-        return measuredWidth;
-    }
-
-    @Implementation
-    public final int getMeasuredHeight() {
-        return measuredHeight;
-    }
-
-    @Implementation
-    public final void setMeasuredDimension(int measuredWidth, int measuredHeight) {
-        this.measuredWidth = measuredWidth;
-        this.measuredHeight = measuredHeight;
-    }
-
-    @Implementation
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec),
-                MeasureSpec.getSize(heightMeasureSpec));
-    }
-
-    @Implementation
-    public final void measure(int widthMeasureSpec, int heightMeasureSpec) {
-        // We really want to invoke the onMeasure method of the real view,
-        // as the real View likely contains an implementation of onMeasure
-        // worthy of test, rather the default shadow implementation.
-        // But Android declares onMeasure as protected.
-        try {
-            Method onMeasureMethod = realView.getClass().getDeclaredMethod("onMeasure", Integer.TYPE, Integer.TYPE);
-            onMeasureMethod.setAccessible(true);
-            onMeasureMethod.invoke(realView, widthMeasureSpec, heightMeasureSpec);
-        } catch (NoSuchMethodException e) {
-            // use default shadow implementation
-            onMeasure(widthMeasureSpec, heightMeasureSpec);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Implementation
     public void draw(android.graphics.Canvas canvas) {
         if (background != null) {
             shadowOf(canvas).appendDescription("background:");
             background.draw(canvas);
-        }
-    }
-
-    @Implementation
-    public void layout(int l, int t, int r, int b) {
-        if (l != left || r != right || t != top || b != bottom) {
-            left = l;
-            top = t;
-            right = r;
-            bottom = b;
-
-            realView.invalidate();
-            Reflection.method("onLayout").withParameterTypes(boolean.class, int.class, int.class, int.class, int.class)
-                    .in(realView).invoke(true, l, t, r, b);
         }
     }
 
@@ -678,7 +582,7 @@ public class ShadowView {
 
     protected void dumpAttributes(PrintStream out) {
         if (realView.getId() > 0) {
-            dumpAttribute(out, "id", shadowOf(context).getResourceLoader().getNameForId(realView.getId()));
+            dumpAttribute(out, "id", shadowOf(realView.getContext()).getResourceLoader().getNameForId(realView.getId()));
         }
 
         switch (realView.getVisibility()) {
@@ -699,38 +603,6 @@ public class ShadowView {
 
     protected void dumpIndent(PrintStream out, int indent) {
         for (int i = 0; i < indent; i++) out.print(" ");
-    }
-
-    /**
-     * @return left side of the view
-     */
-    @Implementation
-    public int getLeft() {
-        return left;
-    }
-
-    /**
-     * @return top coordinate of the view
-     */
-    @Implementation
-    public int getTop() {
-        return top;
-    }
-
-    /**
-     * @return right side of the view
-     */
-    @Implementation
-    public int getRight() {
-        return right;
-    }
-
-    /**
-     * @return bottom coordinate of the view
-     */
-    @Implementation
-    public int getBottom() {
-        return bottom;
     }
 
     /**
@@ -763,26 +635,6 @@ public class ShadowView {
      */
     public void clearWasInvalidated() {
         wasInvalidated = false;
-    }
-
-    @Implementation
-    public void setLeft(int left) {
-        this.left = left;
-    }
-
-    @Implementation
-    public void setTop(int top) {
-        this.top = top;
-    }
-
-    @Implementation
-    public void setRight(int right) {
-        this.right = right;
-    }
-
-    @Implementation
-    public void setBottom(int bottom) {
-        this.bottom = bottom;
     }
 
     @Implementation
@@ -911,13 +763,15 @@ public class ShadowView {
             return;
         }
 
+        final Context context = realView.getContext();
+
         /* good part of following code has been directly copied from original
          * android source */
         setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Method mHandler;
                 try {
-                    mHandler = getContext().getClass().getMethod(handlerName,
+                    mHandler = context.getClass().getMethod(handlerName,
                             View.class);
                 } catch (NoSuchMethodException e) {
                     int id = realView.getId();
@@ -926,12 +780,12 @@ public class ShadowView {
                             .getNameForId(id) + "'";
                     throw new IllegalStateException("Could not find a method " +
                             handlerName + "(View) in the activity "
-                            + getContext().getClass() + " for onClick handler"
+                            + context.getClass() + " for onClick handler"
                             + " on view " + realView.getClass() + idText, e);
                 }
 
                 try {
-                    mHandler.invoke(getContext(), realView);
+                    mHandler.invoke(context, realView);
                 } catch (IllegalAccessException e) {
                     throw new IllegalStateException("Could not execute non "
                             + "public method of the activity", e);
@@ -955,7 +809,7 @@ public class ShadowView {
         if (contentDescription != null) {
             if (contentDescription.startsWith("@string/")) {
                 int resId = attributeSet.getAttributeResourceValue("android", "contentDescription", 0);
-                contentDescription = context.getResources().getString(resId);
+                contentDescription = realView.getResources().getString(resId);
             }
             setContentDescription(contentDescription);
         }
@@ -964,7 +818,11 @@ public class ShadowView {
     private boolean noParentHasFocus(View view) {
         while (view != null) {
             if (view.hasFocus()) return false;
-            view = (View) view.getParent();
+            ViewParent parent = view.getParent();
+            if (!(parent instanceof View)) {
+                parent = null;
+            }
+            view = (View) parent;
         }
         return true;
     }
@@ -1218,6 +1076,10 @@ public class ShadowView {
 
     public int lastHapticFeedbackPerformed() {
         return hapticFeedbackPerformed;
+    }
+
+    public void setMyParent(ViewParent viewParent) {
+        directlyOn(realView, View.class, "assignParent", ViewParent.class).invoke(viewParent);
     }
 
     @SuppressWarnings({"UnusedDeclaration"})

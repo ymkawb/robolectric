@@ -18,6 +18,7 @@ import android.text.util.Linkify;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 import org.robolectric.internal.Implementation;
@@ -28,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.view.View.VISIBLE;
+import static org.robolectric.Robolectric.directlyOn;
 import static org.robolectric.Robolectric.shadowOf;
 import static org.robolectric.Robolectric.shadowOf_;
 
@@ -124,10 +126,22 @@ public class ShadowTextView extends ShadowView {
         sendBeforeTextChanged(text);
 
         CharSequence oldValue = this.text;
-        this.text = getResources().getText(textResourceId);
+        this.text = realView.getResources().getText(textResourceId);
 
         sendOnTextChanged(oldValue);
         sendAfterTextChanged();
+    }
+
+    @Implementation
+    public final void setMeasuredDimension(int measuredWidth, int measuredHeight) {
+        directlyOn(realView, View.class, "setMeasuredDimension", int.class, int.class)
+                .invoke(measuredWidth, measuredHeight);
+    }
+
+    @Implementation
+    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        setMeasuredDimension(View.MeasureSpec.getSize(widthMeasureSpec),
+                View.MeasureSpec.getSize(heightMeasureSpec));
     }
 
     private void sendAfterTextChanged() {
@@ -194,7 +208,7 @@ public class ShadowTextView extends ShadowView {
     @Implementation
     public void setTextSize(int unit, float value) {
         if (unit == TypedValue.COMPLEX_UNIT_DIP || unit == TypedValue.COMPLEX_UNIT_SP) {
-            textSize = value * getResources().getDisplayMetrics().density;
+            textSize = value * realView.getResources().getDisplayMetrics().density;
         } else if (unit == TypedValue.COMPLEX_UNIT_PX) {
             textSize = value;
         } else {
@@ -219,7 +233,7 @@ public class ShadowTextView extends ShadowView {
 
     @Implementation
     public final void setHint(int resId) {
-        this.hintText = getResources().getText(resId);
+        this.hintText = realView.getResources().getText(resId);
     }
 
     @Implementation(i18nSafe = false)
@@ -456,7 +470,7 @@ public class ShadowTextView extends ShadowView {
         if (text != null) {
             if (text.startsWith("@")) {
                 int textResId = attributeSet.getAttributeResourceValue("android", "text", 0);
-                text = context.getResources().getString(textResId);
+                text = realView.getResources().getString(textResId);
             }
             setText(text);
         }
@@ -467,7 +481,7 @@ public class ShadowTextView extends ShadowView {
         if (colorValue != null) {
             if (colorValue.startsWith("@")) {
                 int colorResId = attributeSet.getAttributeResourceValue("android", "textColor", 0);
-                setTextColor(context.getResources().getColor(colorResId));
+                setTextColor(realView.getResources().getColor(colorResId));
             } else if (colorValue.startsWith("?")) {
                 // ignore for now... todo fix
             } else {
@@ -481,7 +495,7 @@ public class ShadowTextView extends ShadowView {
         if (hint != null) {
             if (hint.startsWith("@")) {
                 int textResId = attributeSet.getAttributeResourceValue("android", "hint", 0);
-                hint = context.getResources().getString(textResId);
+                hint = realView.getResources().getString(textResId);
             }
             setHint(hint);
         }
@@ -492,7 +506,7 @@ public class ShadowTextView extends ShadowView {
         if (colorValue != null) {
             if (colorValue.startsWith("@")) {
                 int colorResId = attributeSet.getAttributeResourceValue("android", "hintColor", 0);
-                setHintTextColor(context.getResources().getColor(colorResId));
+                setHintTextColor(realView.getResources().getColor(colorResId));
             } else if (colorValue.startsWith("?")) {
                 // ignore for now... todo fix
             } else {

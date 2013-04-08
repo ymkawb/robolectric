@@ -69,7 +69,7 @@ public class ListViewTest {
             listView.addHeaderView(new View(Robolectric.application));
             fail();
         } catch (java.lang.IllegalStateException exception) {
-            assertThat(exception.getMessage()).isEqualTo("Cannot add header view to list -- setAdapter has already been called");
+            assertThat(exception.getMessage()).isEqualTo("Cannot add header view to list -- setAdapter has already been called.");
         }
 
         try {
@@ -261,26 +261,41 @@ public class ListViewTest {
         shadowOf(listView).checkValidity();
     }
 
-    @Test(expected = ArrayIndexOutOfBoundsException.class)
+    @Test
     public void revalidate_removingAnItemWithoutInvalidating_shouldExplode() throws Exception {
         ListAdapter adapter = prepareWithListAdapter();
         adapter.items.remove(0);
-        shadowOf(listView).checkValidity(); // should 'splode!
+        try {
+            shadowOf(listView).checkValidity(); // should 'splode!
+            fail("should have thrown!");
+        } catch (RuntimeException e) {
+            // expected
+        }
     }
 
-    @Test(expected = ArrayIndexOutOfBoundsException.class)
+    @Test
     public void revalidate_addingAnItemWithoutInvalidating_shouldExplode() throws Exception {
         ListAdapter adapter = prepareWithListAdapter();
         adapter.items.add("x");
-        shadowOf(listView).checkValidity(); // should 'splode!
+        try {
+            shadowOf(listView).checkValidity(); // should 'splode!
+            fail("should have thrown!");
+        } catch (RuntimeException e) {
+            // expected
+        }
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void revalidate_changingAnItemWithoutInvalidating_shouldExplode() throws Exception {
         ListAdapter adapter = prepareWithListAdapter();
         adapter.items.remove(2);
         adapter.items.add("x");
-        shadowOf(listView).checkValidity(); // should 'splode!
+        try {
+            shadowOf(listView).checkValidity(); // should 'splode!
+            fail("should have thrown!");
+        } catch (RuntimeException e) {
+            // expected
+        }
     }
 
     @Test
@@ -331,9 +346,11 @@ public class ListViewTest {
     }
 
     @Test
-    public void getPositionForView_shouldReturnInvalidPostionForViewThatIsNotFound() throws Exception {
+    public void getPositionForView_shouldReturnInvalidPositionForViewThatIsNotFound() throws Exception {
         prepareWithListAdapter();
-        assertThat(listView.getPositionForView(new View(Robolectric.application))).isEqualTo(AdapterView.INVALID_POSITION);
+        View view = new View(Robolectric.application);
+        shadowOf(view).setMyParent(new StubViewParent()); // Android implementation requires the item have a parent
+        assertThat(listView.getPositionForView(view)).isEqualTo(AdapterView.INVALID_POSITION);
     }
 
     @Test
@@ -470,13 +487,13 @@ public class ListViewTest {
     private ListAdapter prepareWithListAdapter() {
         ListAdapter adapter = new ListAdapter("a", "b", "c");
         listView.setAdapter(adapter);
-        ShadowHandler.idleMainLooper();
+        shadowOf(listView).populateItems();
         return adapter;
     }
 
     private ShadowListView prepareListWithThreeItems() {
         listView.setAdapter(new CountingAdapter(3));
-        ShadowHandler.idleMainLooper();
+        shadowOf(listView).populateItems();
 
         return shadowOf(listView);
     }
