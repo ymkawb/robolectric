@@ -22,6 +22,7 @@ import org.robolectric.internal.Implements;
 import org.robolectric.internal.RealObject;
 
 import java.io.PrintStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -53,7 +54,7 @@ public class ShadowView {
     private boolean pressed;
     private View.OnClickListener onClickListener;
     private View.OnLongClickListener onLongClickListener;
-    private Object tag;
+//    private Object tag;
     private boolean enabled = true;
     private int visibility = View.VISIBLE;
     float x;
@@ -102,9 +103,9 @@ public class ShadowView {
         getConstructor(View.class, realView, Context.class, AttributeSet.class, int.class)
                 .invoke(context, attributeSet, defStyle);
 
-        if (attributeSet != null) {
-            applyAttributes();
-        }
+//        if (attributeSet != null) {
+//            applyAttributes();
+//        }
     }
 
     public void applyAttributes() {
@@ -204,23 +205,23 @@ public class ShadowView {
 //        return null;
 //    }
 
-    @Implementation
-    public View findViewWithTag(Object obj) {
-        if (obj.equals(realView.getTag())) {
-            return realView;
-        }
-
-        return null;
-    }
-
-    @Implementation
-    public View getRootView() {
-        ShadowView root = this;
-        while (root.parent != null) {
-            root = root.parent;
-        }
-        return root.realView;
-    }
+//    @Implementation
+//    public View findViewWithTag(Object obj) {
+//        if (obj.equals(realView.getTag())) {
+//            return realView;
+//        }
+//
+//        return null;
+//    }
+//
+//    @Implementation
+//    public View getRootView() {
+//        ShadowView root = this;
+//        while (root.parent != null) {
+//            root = root.parent;
+//        }
+//        return root.realView;
+//    }
 
 //    @Implementation
 //    public final ViewParent getParent() {
@@ -367,15 +368,15 @@ public class ShadowView {
         this.onKeyListener = onKeyListener;
     }
 
-    @Implementation
-    public Object getTag() {
-        return this.tag;
-    }
-
-    @Implementation
-    public void setTag(Object tag) {
-        this.tag = tag;
-    }
+//    @Implementation
+//    public Object getTag() {
+//        return this.tag;
+//    }
+//
+//    @Implementation
+//    public void setTag(Object tag) {
+//        this.tag = tag;
+//    }
 
     @Implementation
     public void draw(android.graphics.Canvas canvas) {
@@ -728,8 +729,7 @@ public class ShadowView {
     private void applyTagAttribute() {
         Object tag = attributeSet.getAttributeValue("android", "tag");
         if (tag != null) {
-            setTag(tag);
-            directlyOn(realView, View.class).setTag(tag);
+            realView.setTag(tag);
         }
     }
 
@@ -1030,20 +1030,16 @@ public class ShadowView {
     	return touchDelegate;
     }
 
-    @Implementation
-    public void onAttachedToWindow() {
-        if (strict && attachedToWindow) throw new IllegalStateException("already attached!");
-        attachedToWindow = true;
-    }
-
-    @Implementation
-    public void onDetachedFromWindow() {
-        if (strict && !attachedToWindow) throw new IllegalStateException("not attached!");
-        attachedToWindow = false;
-    }
-
     public boolean isAttachedToWindow() {
-        return attachedToWindow;
+        try {
+            Field mAttachInfo = View.class.getDeclaredField("mAttachInfo");
+            mAttachInfo.setAccessible(true);
+            return mAttachInfo.get(realView) != null;
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void callOnAttachedToWindow() {

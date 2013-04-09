@@ -88,9 +88,15 @@ public class RoboAttributeSetTest {
     }
 
     @Test
+    public void getAttributeResourceValue_shouldReturnDefaultValueWhenAttributeIsNull() throws Exception {
+        createTestAttributeSet(new Attribute(TEST_PACKAGE + ":attr/message", "@null", TEST_PACKAGE));
+        assertThat(roboAttributeSet.getAttributeResourceValue(TEST_PACKAGE, "message", -1)).isEqualTo(-1);
+    }
+
+    @Test
     public void getAttributeResourceValue_shouldReturnDefaultValueWhenNotInAttributeSet() throws Exception {
         createTestAttributeSet();
-        assertThat(roboAttributeSet.getAttributeResourceValue("com.some.namespace", "message", -1)).isEqualTo(-1);
+        assertThat(roboAttributeSet.getAttributeResourceValue(TEST_PACKAGE, "message", -1)).isEqualTo(-1);
     }
 
     @Test

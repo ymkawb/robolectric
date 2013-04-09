@@ -19,7 +19,6 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import static org.fest.reflect.core.Reflection.*;
-import static org.robolectric.Robolectric.shadowOf;
 
 public class RoboWindow extends Window {
     public int requestedFeatureId;
@@ -74,9 +73,7 @@ public class RoboWindow extends Window {
     public void setContentView(View view) {
         ViewGroup decorView = getDecorView();
         if (contentView != null) {
-            shadowOf(contentView).callOnDetachedFromWindow();
             decorView.removeView(contentView);
-
         }
         contentView = view;
 
@@ -84,8 +81,6 @@ public class RoboWindow extends Window {
             if (contentView.getParent() != decorView && contentView != decorView) {
                 decorView.addView(contentView);
             }
-
-            shadowOf(contentView).callOnAttachedToWindow();
         }
     }
 

@@ -4,6 +4,7 @@ import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import org.robolectric.Robolectric;
@@ -158,6 +159,10 @@ public class ShadowTypedArray implements UsesResources {
     public Drawable getDrawable(int index) {
         ResName resName = getResName(index);
         if (resName == null) return null;
+        String textValue = values.getAttributeValue(resName.namespace, resName.name);
+        if (textValue != null && textValue.startsWith("#")) {
+            return new ColorDrawable(Color.parseColor(textValue));
+        }
         int drawableId = values.getAttributeResourceValue(resName.namespace, resName.name, -1);
         return drawableId == -1 ? null : resources.getDrawable(drawableId);
     }

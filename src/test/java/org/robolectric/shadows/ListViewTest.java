@@ -76,7 +76,7 @@ public class ListViewTest {
             listView.addHeaderView(new View(Robolectric.application), null, false);
             fail();
         } catch (java.lang.IllegalStateException exception) {
-            assertThat(exception.getMessage()).isEqualTo("Cannot add header view to list -- setAdapter has already been called");
+            assertThat(exception.getMessage()).isEqualTo("Cannot add header view to list -- setAdapter has already been called.");
         }
     }
 

@@ -86,16 +86,11 @@ public class ViewTest {
             protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
                 transcript.add("onLayout " + changed + " " + left + " " + top + " " + right + " " + bottom);
             }
-
-            @Override
-            public void invalidate() {
-                transcript.add("invalidate");
-            }
         };
         view1.layout(0, 0, 0, 0);
         transcript.assertNoEventsSoFar();
         view1.layout(1, 2, 3, 4);
-        transcript.assertEventsSoFar("invalidate", "onLayout true 1 2 3 4");
+        transcript.assertEventsSoFar("onLayout true 1 2 3 4");
         view1.layout(1, 2, 3, 4);
         transcript.assertNoEventsSoFar();
     }
@@ -698,7 +693,7 @@ public class ViewTest {
         assertFalse(shadowOf(temporaryChild).isAttachedToWindow());
 
         window.setContentView(null);
-        transcript.assertEventsSoFar("parent detached", "child detached", "another child detached");
+        transcript.assertEventsSoFar("child detached", "another child detached", "parent detached");
     }
 
     @Test public void removeAllViews_shouldCallOnAttachedToAndDetachedFromWindow() throws Exception {
@@ -708,7 +703,7 @@ public class ViewTest {
         new RoboWindow(application).setContentView(parent);
         transcript.clear();
         parent.removeAllViews();
-        transcript.assertEventsSoFar("child detached", "another child detached");
+        transcript.assertEventsSoFar("another child detached", "child detached");
     }
 
     private class MyView extends LinearLayout {

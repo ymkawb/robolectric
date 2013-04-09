@@ -1,8 +1,11 @@
 package org.robolectric.shadows;
 
 import android.widget.BaseAdapter;
+import org.robolectric.internal.Implementation;
 import org.robolectric.internal.Implements;
 import org.robolectric.internal.RealObject;
+
+import static org.robolectric.Robolectric.directlyOn;
 
 @SuppressWarnings({"UnusedDeclaration"})
 @Implements(value = BaseAdapter.class, callThroughByDefault = true)
@@ -49,13 +52,12 @@ public class ShadowBaseAdapter {
 //    /**
 //     * Notifies the registered observers
 //     */
-//    @Implementation
-//    public void notifyDataSetChanged() {
-//        wasNotifyDataSetChangedCalled = true;
-//        for (DataSetObserver dataSetObserver : dataSetObservers) {
-//            dataSetObserver.onChanged();
-//        }
-//    }
+    @Implementation
+    public void notifyDataSetChanged() {
+        wasNotifyDataSetChangedCalled = true;
+        directlyOn(realBaseAdapter, BaseAdapter.class, "notifyDataSetChanged").invoke();
+    }
+
 //
 //    /**
 //     * Notifies the registered observers

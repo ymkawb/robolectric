@@ -43,23 +43,23 @@ public class ShadowViewGroup extends ShadowView {
 //        return null;
 //    }
 
-    @Implementation
-    @Override
-    public View findViewWithTag(Object obj) {
-        if (obj.equals(realView.getTag())) {
-            return realView;
-        }
-
-        for (int i = 0; i < realViewGroup.getChildCount(); i++) {
-            View child = realViewGroup.getChildAt(i);
-            View found = child.findViewWithTag(obj);
-            if (found != null) {
-                return found;
-            }
-        }
-
-        return null;
-    }
+    //@Implementation
+    //@Override
+    //public View findViewWithTag(Object obj) {
+    //    if (obj.equals(realView.getTag())) {
+    //        return realView;
+    //    }
+    //
+    //    for (int i = 0; i < realViewGroup.getChildCount(); i++) {
+    //        View child = realViewGroup.getChildAt(i);
+    //        View found = child.findViewWithTag(obj);
+    //        if (found != null) {
+    //            return found;
+    //        }
+    //    }
+    //
+    //    return null;
+    //}
 
 //    @Implementation
 //    public ViewGroup.LayoutParams generateDefaultLayoutParams() {
@@ -255,22 +255,6 @@ public class ShadowViewGroup extends ShadowView {
     @Implementation
     public AnimationListener getLayoutAnimationListener() {
         return animListener;
-    }
-
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        for (int i = 0; i < realViewGroup.getChildCount(); i++) {
-            shadowOf(realViewGroup.getChildAt(i)).callOnAttachedToWindow();
-        }
-    }
-
-    @Override
-    public void onDetachedFromWindow() {
-        for (int i = 0; i < realViewGroup.getChildCount(); i++) {
-            shadowOf(realViewGroup.getChildAt(i)).callOnDetachedFromWindow();
-        }
-        super.onDetachedFromWindow();
     }
 
     @Implementation

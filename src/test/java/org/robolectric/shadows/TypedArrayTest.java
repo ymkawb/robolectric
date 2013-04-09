@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.drawable.ColorDrawable;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,6 +62,16 @@ public class TypedArrayTest {
     @Test
     public void getDimension_shouldReturnDefaultValue() throws Exception {
         assertThat(context.obtainStyledAttributes(new int[]{android.R.attr.alpha}).getDimension(0, -1f)).isEqualTo(-1f);
+    }
+
+    @Test
+    public void getDrawable_withExplicitColorValue_shouldReturnColorDrawable() throws Exception {
+        Resources resources = Robolectric.application.getResources();
+        RoboAttributeSet attributeSet = new RoboAttributeSet(
+                asList(new Attribute("android:attr/background", "#ff777777", TestUtil.TEST_PACKAGE)
+                ), shadowOf(resources).getResourceLoader(), null);
+        TypedArray typedArray = ShadowTypedArray.create(resources, attributeSet, new int[]{android.R.attr.background});
+        assertThat(typedArray.getDrawable(0)).isEqualTo(new ColorDrawable(0xff777777));
     }
 
     @Test
