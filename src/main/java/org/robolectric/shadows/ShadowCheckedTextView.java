@@ -6,7 +6,7 @@ import org.robolectric.internal.Implements;
 import org.robolectric.internal.RealObject;
 
 @SuppressWarnings({"UnusedDeclaration"})
-@Implements(value = CheckedTextView.class, inheritImplementationMethods = true)
+@Implements(value = CheckedTextView.class)
 public class ShadowCheckedTextView extends ShadowTextView {
     @RealObject CheckedTextView realCheckedTextView;
     private boolean checked;
@@ -21,10 +21,10 @@ public class ShadowCheckedTextView extends ShadowTextView {
         return checked;
     }
 
-    @Implementation @Override
+    @Implementation
     public boolean performClick() {
         realCheckedTextView.toggle();
-        return super.performClick();
+        return realView.performClick();
     }
 
     @Implementation

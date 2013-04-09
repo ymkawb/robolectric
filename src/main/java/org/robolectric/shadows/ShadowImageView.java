@@ -11,20 +11,13 @@ import org.robolectric.internal.Implements;
 
 import static org.robolectric.Robolectric.shadowOf;
 
-@Implements(value = ImageView.class, inheritImplementationMethods = true)
+@Implements(value = ImageView.class)
 public class ShadowImageView extends ShadowView {
     private Drawable imageDrawable;
-    private int resourceId;
     private Bitmap imageBitmap;
     private ImageView.ScaleType scaleType;
     private Matrix matrix;
     private int imageLevel;
-
-    @Override
-    public void applyAttributes() {
-        super.applyAttributes();
-        applyImageAttribute();
-    }
 
     @Implementation
     public void setImageBitmap(Bitmap imageBitmap) {
@@ -44,7 +37,6 @@ public class ShadowImageView extends ShadowView {
 
     @Implementation
     public void setImageResource(int resId) {
-        this.resourceId = resId;
         setImageDrawable(buildDrawable(resId));
     }
 
@@ -61,20 +53,6 @@ public class ShadowImageView extends ShadowView {
     @Implementation
     public Drawable getDrawable() {
         return imageDrawable;
-    }
-
-    /**
-     * @return the image drawable
-     * @deprecated Use android.widget.ImageView#getDrawable() instead.
-     */
-    @Deprecated
-    public Drawable getImageDrawable() {
-        return imageDrawable;
-    }
-
-    @Deprecated
-    public int getResourceId() {
-        return resourceId;
     }
 
     @Implementation

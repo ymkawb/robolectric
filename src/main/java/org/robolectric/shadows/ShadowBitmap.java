@@ -153,7 +153,7 @@ public class ShadowBitmap {
     @Override @Implementation
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != ShadowBitmap.class) return false;
+        if (!(o instanceof Bitmap)) return false;
 
         ShadowBitmap that = shadowOf((Bitmap) o);
 
@@ -174,7 +174,7 @@ public class ShadowBitmap {
 
     @Override @Implementation
     public String toString() {
-        return "ShadowBitmap{" +
+        return "Bitmap{" +
                 "description='" + description + '\'' +
                 ", width=" + width +
                 ", height=" + height +

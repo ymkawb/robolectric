@@ -12,7 +12,7 @@ import org.robolectric.internal.RealObject;
 import java.lang.ref.WeakReference;
 
 @SuppressWarnings({"UnusedDeclaration"})
-@Implements(value = ViewStub.class, inheritImplementationMethods = true)
+@Implements(value = ViewStub.class)
 public class ShadowViewStub extends ShadowView {
     @RealObject ViewStub viewStub;
 
@@ -20,13 +20,6 @@ public class ShadowViewStub extends ShadowView {
     private int mInflatedId;
     private WeakReference<View> mInflatedViewRef;
     private ViewStub.OnInflateListener mInflateListener;
-
-    @Override public void applyAttributes() {
-        super.applyAttributes();
-
-        mInflatedId = attributeSet.getAttributeResourceValue("android", "inflatedId", 0);
-        mLayoutResource = attributeSet.getAttributeResourceValue("android", "layout", 0);
-    }
 
     @Implementation
     public int getInflatedId() {

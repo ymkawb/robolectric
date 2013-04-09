@@ -161,7 +161,6 @@ import org.robolectric.shadows.ShadowObjectAnimator;
 import org.robolectric.shadows.ShadowOverlayItem;
 import org.robolectric.shadows.ShadowPaint;
 import org.robolectric.shadows.ShadowParcel;
-import org.robolectric.shadows.ShadowPasswordTransformationMethod;
 import org.robolectric.shadows.ShadowPath;
 import org.robolectric.shadows.ShadowPendingIntent;
 import org.robolectric.shadows.ShadowPeriodicSync;
@@ -432,7 +431,6 @@ public class RobolectricBase {
             ShadowObjectAnimator.class,
             ShadowPaint.class,
             ShadowParcel.class,
-            ShadowPasswordTransformationMethod.class,
             ShadowPath.class,
             ShadowPendingIntent.class,
             ShadowPeriodicSync.class,

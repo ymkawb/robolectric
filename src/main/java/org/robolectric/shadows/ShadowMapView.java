@@ -22,7 +22,7 @@ import static org.robolectric.RobolectricForMaps.shadowOf;
  * {@code Overlay}s, and {@code TouchEvent}s
  */
 @SuppressWarnings({"UnusedDeclaration"})
-@Implements(value = MapView.class, inheritImplementationMethods = true)
+@Implements(value = MapView.class)
 public class ShadowMapView extends ShadowViewGroup {
     private boolean satelliteOn;
     private MapController mapController;
@@ -163,7 +163,7 @@ public class ShadowMapView extends ShadowViewGroup {
     }
 
     @Implementation
-    @Override public boolean dispatchTouchEvent(MotionEvent event) {
+    public boolean dispatchTouchEvent(MotionEvent event) {
         for (Overlay overlay : overlays) {
             if (overlay.onTouchEvent(event, realMapView)) {
                 return true;
@@ -203,7 +203,7 @@ public class ShadowMapView extends ShadowViewGroup {
 
         lastTouchEventPoint = new Point((int) event.getX(), (int) event.getY());
 
-        return super.dispatchTouchEvent(event);
+        return realView.dispatchTouchEvent(event);
     }
 
     @Implementation

@@ -3,6 +3,8 @@ package org.robolectric.res;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -29,7 +31,6 @@ import org.robolectric.TestRunners;
 import org.robolectric.annotation.Config;
 import org.robolectric.res.builder.LayoutBuilder;
 import org.robolectric.shadows.ShadowImageView;
-import org.robolectric.shadows.ShadowTextView;
 import org.robolectric.util.CustomView;
 import org.robolectric.util.CustomView2;
 import org.robolectric.util.I18nException;
@@ -235,12 +236,12 @@ public class LayoutLoaderTest {
     @Test
     public void testTextViewCompoundDrawablesAreSet() throws Exception {
         View mediaView = inflate("main");
-        ShadowTextView shadowTextView = shadowOf((TextView) mediaView.findViewById(R.id.title));
+        TextView view = (TextView) mediaView.findViewById(R.id.title);
 
-        assertThat(shadowTextView.getCompoundDrawablesImpl().getTop()).isEqualTo(R.drawable.an_image);
-        assertThat(shadowTextView.getCompoundDrawablesImpl().getRight()).isEqualTo(R.drawable.an_other_image);
-        assertThat(shadowTextView.getCompoundDrawablesImpl().getBottom()).isEqualTo(R.drawable.third_image);
-        assertThat(shadowTextView.getCompoundDrawablesImpl().getLeft()).isEqualTo(R.drawable.fourth_image);
+        assertThat(view.getCompoundDrawables()[0]).isEqualTo(drawable(R.drawable.fourth_image));
+        assertThat(view.getCompoundDrawables()[1]).isEqualTo(drawable(R.drawable.an_image));
+        assertThat(view.getCompoundDrawables()[2]).isEqualTo(drawable(R.drawable.an_other_image));
+        assertThat(view.getCompoundDrawables()[3]).isEqualTo(drawable(R.drawable.third_image));
     }
 
     @Test
@@ -254,7 +255,9 @@ public class LayoutLoaderTest {
     @Test
     public void testImageViewSrcIsSet() throws Exception {
         View mediaView = inflate("main");
-        assertThat(((ShadowImageView) shadowOf(mediaView.findViewById(R.id.image))).getResourceId()).isEqualTo(R.drawable.an_image);
+        ImageView imageView = (ImageView) mediaView.findViewById(R.id.image);
+        BitmapDrawable drawable = (BitmapDrawable) imageView.getDrawable();
+        assertThat(shadowOf(drawable.getBitmap()).getLoadedFromResourceId()).isEqualTo(R.drawable.an_image);
     }
 
     @Test
@@ -419,6 +422,12 @@ public class LayoutLoaderTest {
 
     private View inflate(String layoutName, String qualifiers) {
         return inflate(TEST_PACKAGE, layoutName, qualifiers);
+    }
+
+    private Drawable drawable(int id) {
+        Drawable drawable = context.getResources().getDrawable(id);
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        return drawable;
     }
 
     public static class ClickActivity extends FragmentActivity {

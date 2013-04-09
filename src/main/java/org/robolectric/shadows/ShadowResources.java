@@ -28,7 +28,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import static org.robolectric.Robolectric.newInstanceOf;
+import static org.fest.reflect.core.Reflection.field;
 import static org.robolectric.Robolectric.shadowOf;
 
 /**
@@ -128,7 +128,12 @@ public class ShadowResources {
 
     @Implementation
     public ColorStateList getColorStateList(int id) {
-        return new ColorStateList(new int[0][0], new int[0]);
+        String colorValue = resourceLoader.getColorValue(getResName(id), getQualifiers());
+        if (colorValue != null) {
+            return ColorStateList.valueOf(Color.parseColor(colorValue));
+        } else {
+            return new ColorStateList(new int[0][0], new int[0]);
+        }
     }
 
     @Implementation
@@ -292,11 +297,6 @@ public class ShadowResources {
         return parser;
     }
 
-    @Implementation
-    public final android.content.res.Resources.Theme newTheme() {
-        return inject(realResources, newInstanceOf(Resources.Theme.class));
-    }
-
     public ResourceLoader getResourceLoader() {
         return resourceLoader;
     }
@@ -306,12 +306,9 @@ public class ShadowResources {
     }
 
     @Implements(Resources.Theme.class)
-    public static class ShadowTheme implements UsesResources {
+    public static class ShadowTheme {
+        @RealObject Resources.Theme realTheme;
         protected Resources resources;
-
-        public void injectResources(Resources resources) {
-            this.resources = resources;
-        }
 
         @Implementation
         public TypedArray obtainStyledAttributes(int[] attrs) {
@@ -325,11 +322,17 @@ public class ShadowResources {
 
         @Implementation
         public TypedArray obtainStyledAttributes(AttributeSet set, int[] attrs, int defStyleAttr, int defStyleRes) {
+            Resources resources = getResources();
             if (set == null) {
                 set = new RoboAttributeSet(new ArrayList<Attribute>(), shadowOf(resources).getResourceLoader(), null);
             }
 
             return ShadowTypedArray.create(resources, set, attrs);
+        }
+
+        Resources getResources() {
+            // ugh
+            return field("this$0").ofType(Resources.class).in(realTheme).get();
         }
     }
 
