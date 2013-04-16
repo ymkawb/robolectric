@@ -104,6 +104,7 @@ public class Setup {
     public boolean isFromAndroidSdk(String className) {
         return className.startsWith("android.")
                 || className.startsWith("libcore.")
+                || className.startsWith("com.android.internal.")
                 || className.startsWith("com.google.android.maps.")
                 || className.startsWith("org.apache.http.impl.client.DefaultRequestDirector");
     }

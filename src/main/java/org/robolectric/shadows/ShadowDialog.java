@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -11,10 +12,12 @@ import org.robolectric.Robolectric;
 import org.robolectric.internal.Implementation;
 import org.robolectric.internal.Implements;
 import org.robolectric.internal.RealObject;
+import org.robolectric.tester.android.view.RoboWindow;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.fest.reflect.core.Reflection.method;
 import static org.robolectric.Robolectric.directlyOn;
 import static org.robolectric.Robolectric.shadowOf;
 
@@ -227,7 +230,7 @@ public class ShadowDialog {
     }
 
     public CharSequence getTitle() {
-        return title;
+        return ((RoboWindow) realDialog.getWindow()).getTitle();
     }
 
     public void clickOnText(int textId) {
@@ -265,5 +268,9 @@ public class ShadowDialog {
 
     public static List<Dialog> getShownDialogs() {
         return shownDialogs;
+    }
+
+    public void callOnCreate(Bundle bundle) {
+        method("onCreate").withParameterTypes(Bundle.class).in(realDialog).invoke(bundle);
     }
 }

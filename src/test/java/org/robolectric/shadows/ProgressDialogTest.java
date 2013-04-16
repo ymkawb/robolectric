@@ -25,7 +25,7 @@ public class ProgressDialogTest {
 
     @Before
     public void setUp() {
-        dialog = new ProgressDialog(null);
+        dialog = new ProgressDialog(Robolectric.application);
         shadow = Robolectric.shadowOf(dialog);
     }
 
@@ -40,7 +40,7 @@ public class ProgressDialogTest {
 
         assertThat(shadow.getMessage()).isNull();
         dialog.setMessage(message);
-        assertThat((CharSequence) shadow.getMessage()).isEqualTo(message);
+        assertThat(shadow.getMessage()).isEqualTo(message);
     }
 
     @Test

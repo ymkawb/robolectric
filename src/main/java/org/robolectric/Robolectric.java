@@ -397,6 +397,15 @@ public class Robolectric {
         return method(directMethodName).withReturnType(Object.class).withParameterTypes(paramTypes).in(shadowedObject);
     }
 
+    public static <T> Invoker directlyOn(Object shadowedObject, String clazzName, String methodName, Class<?>... paramTypes) {
+        try {
+            Class<Object> aClass = (Class<Object>) shadowedObject.getClass().getClassLoader().loadClass(clazzName);
+            return directlyOn(shadowedObject, aClass, methodName, paramTypes);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static ShadowAbsListView shadowOf(AbsListView instance) {
         return (ShadowAbsListView) shadowOf_(instance);
     }

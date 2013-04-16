@@ -213,7 +213,7 @@ public class ListViewTest {
     @Test
     public void findItemContainingText_shouldReturnNullIfNotFound() throws Exception {
         ShadowListView shadowListView = prepareListWithThreeItems();
-        assertThat(shadowListView.findItemContainingText("Non-existant item")).isNull();
+        assertThat(shadowListView.findItemContainingText("Non-existent item")).isNull();
     }
 
     @Test

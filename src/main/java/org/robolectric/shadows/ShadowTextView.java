@@ -9,6 +9,7 @@ import android.text.TextWatcher;
 import android.text.method.MovementMethod;
 import android.text.method.TransformationMethod;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 import org.robolectric.internal.Implementation;
@@ -386,18 +387,18 @@ public class ShadowTextView extends ShadowView {
 //    public void setImeOptions(int imeOptions) {
 //        this.imeOptions = imeOptions;
 //    }
-//
-//    /**
-//     * Returns the text string of this {@code TextView}.
-//     * <p/>
-//     * Robolectric extension.
-//     */
-//    @Override
-//    public String innerText() {
-//        CharSequence text = realTextView.getText();
-//        return (text == null || realTextView.getVisibility() != VISIBLE) ? "" : text.toString();
-//    }
-//
+
+    /**
+     * Returns the text string of this {@code TextView}.
+     * <p/>
+     * Robolectric extension.
+     */
+    @Override
+    public String innerText() {
+        CharSequence text = realTextView.getText();
+        return (text == null || realTextView.getVisibility() != View.VISIBLE) ? "" : text.toString();
+    }
+
 //    @Implementation
 //    public void setError(CharSequence error) {
 //        errorText = error;

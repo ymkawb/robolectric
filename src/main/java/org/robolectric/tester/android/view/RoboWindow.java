@@ -29,6 +29,7 @@ public class RoboWindow extends Window {
     private View contentView;
     private FrameLayout decorView;
     private ViewParent viewRootImpl;
+    private CharSequence title;
 
     public RoboWindow(Context context) {
         super(context);
@@ -69,7 +70,7 @@ public class RoboWindow extends Window {
         setContentView(getLayoutInflater().inflate(layoutResID, getDecorView()));
     }
 
-    @Override 
+    @Override
     public void setContentView(View view) {
         ViewGroup decorView = getDecorView();
         if (contentView != null) {
@@ -84,12 +85,12 @@ public class RoboWindow extends Window {
         }
     }
 
-    @Override 
+    @Override
     public void setContentView(View view, ViewGroup.LayoutParams params) {
         setContentView(view);
     }
 
-    @Override 
+    @Override
     public void addContentView(View view, ViewGroup.LayoutParams params) {
         setContentView(view);
     }
@@ -99,13 +100,18 @@ public class RoboWindow extends Window {
         return null;
     }
 
-    @Override 
+    @Override
     public LayoutInflater getLayoutInflater() {
         return LayoutInflater.from(getContext());
     }
 
     @Override
     public void setTitle(CharSequence title) {
+        this.title = title;
+    }
+
+    public CharSequence getTitle() {
+        return title;
     }
 
     @Override
@@ -234,7 +240,7 @@ public class RoboWindow extends Window {
         return getDecorView().findViewById(id);
     }
 
-    @Override 
+    @Override
     public Bundle saveHierarchyState() {
         return null;
     }
