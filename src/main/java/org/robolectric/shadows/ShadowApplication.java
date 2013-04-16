@@ -73,6 +73,7 @@ public class ShadowApplication extends ShadowContextWrapper {
         SYSTEM_SERVICE_MAP.put(Context.INPUT_METHOD_SERVICE, "android.view.inputmethod.InputMethodManager");
         SYSTEM_SERVICE_MAP.put(Context.UI_MODE_SERVICE, "android.app.UiModeManager");
         SYSTEM_SERVICE_MAP.put(Context.DOWNLOAD_SERVICE, "android.app.DownloadManager");
+        SYSTEM_SERVICE_MAP.put(Context.TEXT_SERVICES_MANAGER_SERVICE, "android.view.textservice.TextServicesManager");
     }
 
     @RealObject private Application realApplication;

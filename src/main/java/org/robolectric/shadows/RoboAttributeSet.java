@@ -10,9 +10,13 @@ import org.robolectric.util.I18nException;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class RoboAttributeSet implements AttributeSet {
+    private static final Set<String> ALREADY_WARNED_ABOUT = new HashSet<String>();
+
     private final List<Attribute> attributes;
     private final ResourceLoader resourceLoader;
     private Class<? extends View> viewClass;
@@ -64,12 +68,16 @@ public class RoboAttributeSet implements AttributeSet {
     private int extractInt(String value, int defaultValue) {
         if (value == null) return defaultValue;
         if (value.startsWith("0x")) return Integer.parseInt(value.substring(2), 16);
-      try {
-        return Integer.parseInt(value);
-      } catch (NumberFormatException e) {
-        System.out.println("WARN: couldn't parse \"" + value + "\" as an integer");
-        return defaultValue;
-      }
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            synchronized (ALREADY_WARNED_ABOUT) {
+                if (ALREADY_WARNED_ABOUT.add(value)) {
+                    System.out.println("WARN: couldn't parse \"" + value + "\" as an integer");
+                }
+            }
+            return defaultValue;
+        }
     }
 
     public boolean isEnum(String namespace, String attribute) {
@@ -109,7 +117,7 @@ public class RoboAttributeSet implements AttributeSet {
         }
     }
 
-  @Override
+    @Override
     public String getPositionDescription() {
         throw new UnsupportedOperationException();
     }

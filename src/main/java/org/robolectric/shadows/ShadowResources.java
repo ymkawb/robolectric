@@ -292,9 +292,7 @@ public class ShadowResources {
         if (document == null) {
             throw new Resources.NotFoundException();
         }
-        XmlFileBuilder xmlFileBuilder = new XmlFileBuilder();
-        XmlResourceParser parser = xmlFileBuilder.getXml(document);
-        return parser;
+        return new XmlFileBuilder().getXml(document);
     }
 
     public ResourceLoader getResourceLoader() {

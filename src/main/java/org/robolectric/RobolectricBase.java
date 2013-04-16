@@ -209,6 +209,7 @@ import org.robolectric.shadows.ShadowSmsManager;
 import org.robolectric.shadows.ShadowSparseArray;
 import org.robolectric.shadows.ShadowSparseBooleanArray;
 import org.robolectric.shadows.ShadowSparseIntArray;
+import org.robolectric.shadows.ShadowSpellChecker;
 import org.robolectric.shadows.ShadowSpinner;
 import org.robolectric.shadows.ShadowSslErrorHandler;
 import org.robolectric.shadows.ShadowStatFs;
@@ -478,6 +479,7 @@ public class RobolectricBase {
             ShadowSparseArray.class,
             ShadowSparseBooleanArray.class,
             ShadowSparseIntArray.class,
+            ShadowSpellChecker.class,
             ShadowSpinner.class,
             ShadowSyncResult.class,
             ShadowSyncStats.class,

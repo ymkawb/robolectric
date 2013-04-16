@@ -19,6 +19,7 @@ import org.robolectric.internal.RealObject;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import static org.robolectric.Robolectric.directlyOn;
 
@@ -594,6 +595,11 @@ public class ShadowTextView extends ShadowView {
 
     public void setLayout(Layout layout) {
         this.layout = layout;
+    }
+
+    @Implementation
+    public Locale getTextServicesLocale() {
+        return Locale.getDefault();
     }
 
     @Override
